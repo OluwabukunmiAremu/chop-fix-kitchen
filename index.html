@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chop Fix Kitchen | Fresh Nigerian Food & Catering</title>
-  <meta name="description" content="Order freshly made Nigerian meals from Chop Fix Kitchen. Explore jollof rice, fried rice, spaghetti, catering and bulk orders, with easy ordering on WhatsApp." />
+  <meta name="description" content="Order freshly made Nigerian meals from Chop Fix Kitchen. Browse the menu, build your cart and send your order on WhatsApp." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#ff584d" />
   <link rel="canonical" href="https://thechopfix.com/" />
   <link rel="icon" href="assets/logo.png" />
   <meta property="og:title" content="Chop Fix Kitchen | Food That Hits Different" />
-  <meta property="og:description" content="Fresh Nigerian comfort food, catering and bulk orders. Order directly on WhatsApp." />
+  <meta property="og:description" content="Fresh Nigerian comfort food, catering and bulk orders." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://thechopfix.com/" />
   <meta property="og:image" content="https://thechopfix.com/assets/jollof.png" />
@@ -22,11 +22,12 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FoodEstablishment","name":"Chop Fix Kitchen","url":"https://thechopfix.com/","servesCuisine":["Nigerian","African"],"sameAs":["https://www.instagram.com/thechopfixkitchen"]}</script>
 </head>
 <body>
-  <div class="promo">FRESHLY MADE • BIG FLAVOUR • ORDER ON WHATSAPP</div>
+  <div class="promo">FRESHLY MADE • BIG FLAVOUR • BUILD YOUR ORDER ONLINE</div>
+
   <header class="nav wrap">
     <a href="#top" class="brand" aria-label="Chop Fix home"><img src="assets/logo.png" alt="Chop Fix logo"></a>
     <nav aria-label="Main navigation"><a href="#menu">Menu</a><a href="#catering">Catering</a><a href="#about">About</a></nav>
-    <a class="btn btn-hot nav-cta" href="https://wa.me/message/AH3HK7IFQK57H1" target="_blank" rel="noopener">Order now ↗</a>
+    <button class="btn btn-hot nav-cta cart-trigger" type="button">Cart <span class="cart-count">0</span></button>
   </header>
 
   <main id="top">
@@ -34,8 +35,8 @@
       <div class="hero-copy reveal">
         <p class="eyebrow">YOUR NEXT FOOD OBSESSION</p>
         <h1>FOOD THAT<br><span>HITS DIFFERENT.</span></h1>
-        <p class="lede">Big flavour. Proper portions. Zero long talk. Your favourite Nigerian comfort food, made fresh and ready when hunger calls.</p>
-        <div class="hero-actions"><a class="btn btn-hot" href="https://wa.me/message/AH3HK7IFQK57H1" target="_blank" rel="noopener">ORDER ON WHATSAPP ↗</a><a class="text-link" href="#menu">See the menu ↓</a></div>
+        <p class="lede">Big flavour. Proper portions. Zero long talk. Browse the menu, add your favourites and send your order straight to us.</p>
+        <div class="hero-actions"><a class="btn btn-hot" href="#menu">BUILD YOUR ORDER ↓</a><a class="text-link" href="https://wa.me/message/AH3HK7IFQK57H1" target="_blank" rel="noopener">Chat on WhatsApp ↗</a></div>
       </div>
       <div class="hero-photo reveal"><img src="assets/jollof.png" alt="Jollof rice with grilled chicken and plantain"><span class="sticker">MADE<br>FRESH.</span></div>
     </section>
@@ -43,24 +44,82 @@
     <div class="ticker" aria-hidden="true"><div>CHOP • EAT • REPEAT • CHOP • EAT • REPEAT • CHOP • EAT • REPEAT •</div></div>
 
     <section id="menu" class="menu wrap section">
-      <div class="section-head reveal"><div><p class="eyebrow">THE FIXES</p><h2>WHAT ARE YOU<br>CHOPPING TODAY?</h2></div><p>Simple choices. Serious flavour. Pick your fix and message us to order.</p></div>
-      <div class="cards">
-        <article class="card reveal"><div class="food-img"><img src="assets/jollof.png" alt="Smoky jollof rice meal"></div><div class="card-copy"><p class="num">01</p><h3>SMOKY JOLLOF FIX</h3><p>Smoky jollof rice, grilled chicken & sweet plantain.</p><div><strong>₦6,500</strong><a href="https://wa.me/message/AH3HK7IFQK57H1" target="_blank" rel="noopener">Order ↗</a></div></div></article>
-        <article class="card reveal"><div class="food-img"><img src="assets/fried-rice.png" alt="Nigerian fried rice meal"></div><div class="card-copy"><p class="num">02</p><h3>FRIED RICE FIX</h3><p>Nigerian fried rice, grilled chicken & plantain.</p><div><strong>₦7,000</strong><a href="https://wa.me/message/AH3HK7IFQK57H1" target="_blank" rel="noopener">Order ↗</a></div></div></article>
-        <article class="card reveal"><div class="food-img"><img src="assets/spaghetti.png" alt="Smoky spaghetti meal"></div><div class="card-copy"><p class="num">03</p><h3>SPAGHETTI FIX</h3><p>Smoky party spaghetti, grilled chicken & sweet plantain.</p><div><strong>₦6,500</strong><a href="https://wa.me/message/AH3HK7IFQK57H1" target="_blank" rel="noopener">Order ↗</a></div></div></article>
+      <div class="section-head reveal">
+        <div><p class="eyebrow">THE MENU</p><h2>WHAT ARE YOU<br>CHOPPING TODAY?</h2></div>
+        <p>Choose a category, add meals to your cart, adjust quantities and send the complete order when you are ready.</p>
       </div>
-      <p class="menu-note">Menu and prices shown are placeholders and can be updated anytime.</p>
+
+      <div class="menu-toolbar reveal">
+        <div class="category-filters" id="categoryFilters" aria-label="Menu categories"></div>
+        <button class="cart-summary cart-trigger" type="button">View cart <span class="cart-count">0</span></button>
+      </div>
+
+      <div class="cards" id="menuGrid" aria-live="polite"></div>
+      <p class="menu-note">Current menu items and prices are placeholders and can be replaced with the final Chop Fix menu later.</p>
     </section>
 
-    <section id="about" class="manifesto section"><div class="wrap manifesto-grid"><div class="reveal"><p class="eyebrow light">OUR WHOLE PHILOSOPHY</p><h2>GOOD FOOD.<br><span>NO LONG TALK.</span></h2></div><div class="manifesto-copy reveal"><p>We believe food should look good, taste even better and leave you thinking about your next plate before the current one is finished.</p><div class="facts"><span><b>01</b> MADE FRESH</span><span><b>02</b> BIG FLAVOUR</span><span><b>03</b> PROPER PORTIONS</span></div></div></div></section>
+    <section id="about" class="manifesto section">
+      <div class="wrap manifesto-grid">
+        <div class="reveal"><p class="eyebrow light">OUR WHOLE PHILOSOPHY</p><h2>GOOD FOOD.<br><span>NO LONG TALK.</span></h2></div>
+        <div class="manifesto-copy reveal"><p>We believe food should look good, taste even better and leave you thinking about your next plate before the current one is finished.</p><div class="facts"><span><b>01</b> MADE FRESH</span><span><b>02</b> BIG FLAVOUR</span><span><b>03</b> PROPER PORTIONS</span></div></div>
+      </div>
+    </section>
 
-    <section id="catering" class="catering wrap section"><div class="catering-photo reveal"><img src="assets/catering.png" alt="Large Nigerian food catering platter"></div><div class="catering-copy reveal"><p class="eyebrow">CATERING & BULK ORDERS</p><h2>FEED THE<br><span>WHOLE CREW.</span></h2><p>Birthdays, office lunches, hangouts or proper parties — when you need enough food to keep everybody happy, Chop Fix has you covered.</p><a class="btn btn-ink" href="https://wa.me/message/AH3HK7IFQK57H1" target="_blank" rel="noopener">ASK ABOUT CATERING ↗</a></div></section>
+    <section id="catering" class="catering wrap section">
+      <div class="catering-photo reveal"><img src="assets/catering.png" alt="Large Nigerian food catering platter"></div>
+      <div class="catering-copy reveal"><p class="eyebrow">CATERING & BULK ORDERS</p><h2>FEED THE<br><span>WHOLE CREW.</span></h2><p>Birthdays, office lunches, hangouts or proper parties — when you need enough food to keep everybody happy, Chop Fix has you covered.</p><a class="btn btn-ink" href="https://wa.me/message/AH3HK7IFQK57H1" target="_blank" rel="noopener">ASK ABOUT CATERING ↗</a></div>
+    </section>
 
-    <section class="social section"><div class="wrap social-grid"><div class="reveal"><p class="eyebrow">FOLLOW THE FOOD</p><h2>YOUR FEED<br>NEEDS A FIX.</h2><a class="text-link" href="https://www.instagram.com/thechopfixkitchen" target="_blank" rel="noopener">@thechopfixkitchen ↗</a></div><div class="social-tiles reveal"><img src="assets/spaghetti.png" alt="Chop Fix spaghetti"><img src="assets/fried-rice.png" alt="Chop Fix fried rice"></div></div></section>
+    <section class="social section">
+      <div class="wrap social-grid">
+        <div class="reveal"><p class="eyebrow">FOLLOW THE FOOD</p><h2>YOUR FEED<br>NEEDS A FIX.</h2><a class="text-link" href="https://www.instagram.com/thechopfixkitchen" target="_blank" rel="noopener">@thechopfixkitchen ↗</a></div>
+        <div class="social-tiles reveal"><img src="assets/spaghetti.png" alt="Chop Fix spaghetti"><img src="assets/fried-rice.png" alt="Chop Fix fried rice"></div>
+      </div>
+    </section>
   </main>
 
-  <footer><div class="wrap footer-top"><div><p class="eyebrow light">DON'T OVERTHINK IT</p><h2>HUNGRY?<br><span>WE KNOW THE FIX.</span></h2></div><a class="btn btn-hot" href="https://wa.me/message/AH3HK7IFQK57H1" target="_blank" rel="noopener">ORDER ON WHATSAPP ↗</a></div><div class="wrap footer-bottom"><img src="assets/logo.png" alt="Chop Fix"><p>Fresh food. Big flavour.</p><a href="https://www.instagram.com/thechopfixkitchen" target="_blank" rel="noopener">Instagram ↗</a><p>© 2026 Chop Fix Kitchen</p></div></footer>
-  <a class="mobile-order" href="https://wa.me/message/AH3HK7IFQK57H1" target="_blank" rel="noopener">ORDER ON WHATSAPP ↗</a>
+  <footer>
+    <div class="wrap footer-top"><div><p class="eyebrow light">DON'T OVERTHINK IT</p><h2>HUNGRY?<br><span>WE KNOW THE FIX.</span></h2></div><button class="btn btn-hot cart-trigger" type="button">OPEN CART <span class="cart-count">0</span></button></div>
+    <div class="wrap footer-bottom"><img src="assets/logo.png" alt="Chop Fix"><p>Fresh food. Big flavour.</p><a href="https://www.instagram.com/thechopfixkitchen" target="_blank" rel="noopener">Instagram ↗</a><p>© 2026 Chop Fix Kitchen</p></div>
+  </footer>
+
+  <button class="mobile-order cart-trigger" type="button">VIEW CART <span class="cart-count">0</span></button>
+
+  <div class="cart-backdrop" id="cartBackdrop" hidden></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true" aria-labelledby="cartTitle">
+    <div class="cart-head">
+      <div><p class="eyebrow">YOUR ORDER</p><h2 id="cartTitle">THE CART.</h2></div>
+      <button class="icon-btn" id="closeCart" type="button" aria-label="Close cart">×</button>
+    </div>
+
+    <div id="cartItems" class="cart-items"></div>
+    <div id="emptyCart" class="empty-cart">Your cart is hungry too. Add something from the menu.</div>
+
+    <div class="cart-totals">
+      <span>Subtotal</span>
+      <strong id="cartSubtotal">₦0</strong>
+    </div>
+
+    <form id="checkoutForm" class="checkout-form">
+      <h3>ORDER DETAILS</h3>
+      <div class="field-grid">
+        <label>Name<input id="customerName" name="name" autocomplete="name" required></label>
+        <label>Phone<input id="customerPhone" name="phone" autocomplete="tel" required></label>
+      </div>
+      <label>How do you want it?
+        <select id="fulfilment" name="fulfilment">
+          <option value="Delivery">Delivery</option>
+          <option value="Pickup">Pickup</option>
+        </select>
+      </label>
+      <label id="addressField">Delivery address<textarea id="customerAddress" name="address" rows="2"></textarea></label>
+      <label>Order notes<textarea id="customerNotes" name="notes" rows="2" placeholder="No onions, extra spicy, landmark..."></textarea></label>
+      <button class="btn btn-hot checkout-btn" type="submit">COPY ORDER & OPEN WHATSAPP ↗</button>
+      <p class="checkout-note" id="checkoutNote">For now, checkout prepares the complete order for WhatsApp. Online payment and live order tracking come in the backend phase.</p>
+    </form>
+  </aside>
+
+  <script src="menu.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
