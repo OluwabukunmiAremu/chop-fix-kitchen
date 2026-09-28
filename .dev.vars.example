@@ -1,0 +1,3 @@
+ADMIN_PASSWORD=choose-a-strong-admin-password
+SESSION_SECRET=generate-a-long-random-secret
+PAYSTACK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxx
