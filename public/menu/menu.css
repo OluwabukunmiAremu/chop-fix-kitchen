@@ -13,3 +13,7 @@
 .cart-items{max-height:38vh;overflow:auto}
 .backdrop{backdrop-filter:blur(2px)}
 @media(max-width:800px){.shell{width:min(100% - 18px,1480px)}.cart{width:100%;max-height:84dvh;border-left:0;border-right:0}.mobile-cart{display:block;position:fixed;z-index:80;bottom:10px;left:10px;right:10px;border:2px solid;background:var(--ink);color:var(--cream);padding:14px;font-weight:900;box-shadow:none}.mobile-cart span{background:var(--hot);color:var(--ink)}}
+
+
+/* Checkout form restored inside the bottom-sheet order flow */
+#checkout{display:grid;gap:12px;padding:18px 0 4px}.checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}#checkout label{display:grid;gap:6px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}#checkout input,#checkout textarea,#checkout select{width:100%;border:1.5px solid var(--ink);background:white;padding:12px;font:inherit}#checkout textarea{min-height:72px;resize:vertical}.pay-button{width:100%;cursor:pointer}.whatsapp-alt{text-align:center;font-weight:900;text-decoration:underline;padding:7px 0}.checkout-note{opacity:.6;line-height:1.4}.cart{overflow:auto}.cart-items{max-height:28vh}.cart h2{font-size:54px}@media(max-width:800px){.checkout-grid{grid-template-columns:1fr}.cart-items{max-height:24vh}}
