@@ -63,4 +63,16 @@ $('checkout').onsubmit=async e=>{
 };
 const p=new URLSearchParams(location.search);
 if(p.get('payment')==='success'){cart={};save();alert('Payment successful! Your order is confirmed.')}
-else render();
+else {
+  render();
+  const cartIntent=p.get('cart');
+  if(cartIntent==='open' && rows().length){
+    openCart();
+  } else if(cartIntent==='empty' || (cartIntent==='open' && !rows().length)){
+    const prompt=document.createElement('div');
+    prompt.className='menu-prompt';
+    prompt.innerHTML='<b>YOUR ORDER IS EMPTY.</b><span>Pick a fix below and tap ADD + to start your order.</span>';
+    document.querySelector('.menu-section').prepend(prompt);
+    setTimeout(()=>prompt.scrollIntoView({behavior:'smooth',block:'start'}),50);
+  }
+}
