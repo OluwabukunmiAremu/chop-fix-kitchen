@@ -51,24 +51,18 @@
   </main>
   <footer><div class="wrap footer-row"><div><p class="eyebrow light">DON'T OVERTHINK IT</p><h2>HUNGRY?<br><span>WE KNOW THE FIX.</span></h2></div><button class="btn hot cart-open">OPEN CART</button></div></footer>
 
-  <div id="notice" class="notice" hidden></div>
-  <div id="backdrop" class="backdrop" hidden></div>
-  <aside id="cart" class="cart" aria-hidden="true">
-    <div class="cart-head"><div><p class="eyebrow">YOUR ORDER</p><h2>THE CART.</h2></div><button id="closeCart">×</button></div>
-    <div id="cartItems"></div><p id="emptyCart" class="empty">Your cart is hungry too.</p>
-    <div class="total"><span>Subtotal</span><strong id="subtotal">₦0</strong></div>
-    <form id="checkout">
-      <h3>CHECKOUT</h3>
-      <div class="two"><label>Name<input name="name" required></label><label>Phone<input name="phone" required></label></div>
-      <label>Email<input name="email" type="email" required></label>
-      <label>Fulfilment<select name="fulfilment" id="fulfilment"><option>Delivery</option><option>Pickup</option></select></label>
-      <label id="addressWrap">Delivery address<textarea name="address" id="address"></textarea></label>
-      <label>Order notes<textarea name="notes" placeholder="Landmark, allergies, extra spicy..."></textarea></label>
-      <button class="btn hot full" id="payBtn">PAY WITH PAYSTACK ↗</button>
-      <a class="whatsapp-checkout" id="whatsappCheckout" target="_blank">Prefer WhatsApp? Send this order ↗</a>
-      <small>Payment is initialized securely on the backend. No secret keys are stored in this page.</small>
-    </form>
-  </aside>
-  <button class="mobile-cart cart-open">VIEW CART <span class="cart-count">0</span></button>
-
+  <script>
+    (() => {
+      const readCart = () => {
+        try { return JSON.parse(localStorage.getItem('chopfix-revised-menu-cart') || '{}'); }
+        catch { return {}; }
+      };
+      const cartCount = () => Object.values(readCart()).reduce((sum, qty) => sum + Number(qty || 0), 0);
+      const syncCount = () => document.querySelectorAll('.cart-count').forEach(el => el.textContent = cartCount());
+      const goToOrder = () => location.href = '/menu/?cart=' + (cartCount() > 0 ? 'open' : 'empty');
+      document.querySelectorAll('.cart-open').forEach(btn => btn.addEventListener('click', goToOrder));
+      syncCount();
+      window.addEventListener('storage', syncCount);
+    })();
+  </script>
 </body></html>
