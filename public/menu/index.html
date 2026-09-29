@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Menu | Chop Fix Kitchen</title>
+  <meta name="description" content="Explore the Chop Fix Kitchen menu — pasta boxes, jollof combos and party platters.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="menu.css">
+</head>
+<body>
+  <div class="promo">FRESHLY MADE • BIG FLAVOUR • ORDER ONLINE</div>
+  <header class="nav shell">
+    <a class="brand" href="/"><span class="brand-mark">CHOP<br><b>FIX</b></span></a>
+    <nav><a href="/">Home</a><a class="active" href="/menu/">Menu</a><a href="/#catering">Catering</a><a href="/#about">About</a></nav>
+    <button class="cart-button" id="openCart">CART <span id="cartCount">0</span></button>
+  </header>
+
+  <main>
+    <section class="menu-hero shell">
+      <div><p class="eyebrow">THE CHOP FIX MENU</p><h1>PICK YOUR<br><span>FIX.</span></h1></div>
+      <div class="intro"><p>Comfort food made to hit properly. Choose your box, build your order, and we’ll handle the rest.</p><div class="mini-note">Pasta boxes • Jollof combos • Party platters</div></div>
+    </section>
+
+    <section class="feature-strip"><div class="shell strip-inner"><span>MADE FRESH</span><span>PROPER PORTIONS</span><span>PARTY READY</span><span>NO LONG TALK</span></div></section>
+
+    <section class="menu-section shell">
+      <div class="section-heading"><div><p class="eyebrow">INDIVIDUAL BOXES</p><h2>YOUR EVERYDAY<br>FIX.</h2></div><p>Freshly prepared boxes for lunch, dinner, or when hunger is doing too much.</p></div>
+      <div class="menu-grid">
+        <article class="meal-card"><div class="photo tall"><img src="/assets/menu/penne-meatballs.webp" alt="Penne pasta and meatballs"></div><div class="meal-body"><div class="tag">PASTA</div><h3>PENNE + MEATBALLS</h3><p>Saucy penne pasta finished with seasoned beef meatballs.</p><div class="meal-footer"><strong>₦7,000</strong><button data-add="Penne Pasta + Meatballs" data-price="7000">ADD +</button></div></div></article>
+        <article class="meal-card featured"><div class="photo tall"><img src="/assets/menu/penne-chicken.webp" alt="Penne pasta and grilled chicken"></div><div class="meal-body"><div class="tag">BEST FOR A PROPER MEAL</div><h3>PENNE + GRILLED CHICKEN</h3><p>Saucy penne pasta topped with smoky, grilled chicken.</p><div class="meal-footer"><strong>₦6,500</strong><button data-add="Penne Pasta + Grilled Chicken" data-price="6500">ADD +</button></div></div></article>
+        <article class="meal-card"><div class="photo tall"><img src="/assets/menu/jollof-combo.webp" alt="Jollof rice, plantain and turkey combo"></div><div class="meal-body"><div class="tag">COMBO • MOQ 5 PACKS</div><h3>JOLLOF COMBO</h3><p>Jollof rice, sweet plantain and turkey. Minimum order quantity: 5 packs.</p><div class="meal-footer"><strong>₦6,500</strong><button data-add="Jollof Combo" data-price="6500" data-min="5">ADD 5 +</button></div></div></article>
+      </div>
+    </section>
+
+    <section class="party-block"><div class="shell party-grid"><div class="party-image"><img src="/assets/menu/party-platter.webp" alt="Chop Fix party platter with fried rice, burgers, kebabs, small chops and fruit"></div><div class="party-copy"><p class="eyebrow light">BIG ORDERS • EVENTS • CELEBRATIONS</p><h2>THE PARTY<br><span>PLATTER.</span></h2><p class="party-price">₦250,000 <small>serves 15 people</small></p><div class="includes"><div><b>5L</b><span>Fried rice</span></div><div><b>12</b><span>Big burgers</span></div><div><b>12</b><span>Chicken kebabs</span></div><div><b>1</b><span>Small chops platter + money bags</span></div><div><b>12</b><span>Cups of mixed fruit</span></div><div><b>12</b><span>Complimentary popcorn packs</span></div></div><button class="party-add" data-add="Party Platter — serves 15" data-price="250000">ADD PARTY PLATTER +</button></div></div></section>
+
+    <section class="gallery shell"><div class="gallery-copy"><p class="eyebrow">THE FOOD SPEAKS</p><h2>LOOK GOOD.<br>TASTE BETTER.</h2></div><div class="gallery-grid"><img src="/assets/menu/penne-chicken-wide.webp" alt="Penne pasta and grilled chicken boxes"><img src="/assets/menu/penne-chicken-pair.webp" alt="Two Chop Fix pasta boxes"><img src="/assets/menu/packaging.webp" alt="Chop Fix branded food packaging"></div></section>
+  </main>
+
+  <div class="backdrop" id="backdrop" hidden></div>
+  <aside class="cart" id="cart" aria-hidden="true"><div class="cart-head"><div><p class="eyebrow">YOUR ORDER</p><h2>THE CART.</h2></div><button id="closeCart">×</button></div><div id="cartItems" class="cart-items"></div><p class="empty" id="empty">Nothing here yet. Your food is waiting.</p><div class="total"><span>Subtotal</span><strong id="subtotal">₦0</strong></div><a class="checkout" id="whatsappOrder" target="_blank" rel="noopener">SEND ORDER ON WHATSAPP ↗</a><p class="cart-note">Online payment can plug into this cart when Paystack is switched on.</p></aside>
+  <button class="mobile-cart" id="mobileCart">VIEW CART <span id="mobileCount">0</span></button>
+  <script src="menu.js"></script>
+</body>
+</html>
