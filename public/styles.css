@@ -269,3 +269,40 @@
   .hero-kicker,.hero-title .line,.hero-lede,.hero-actions,.hero-proof,.hero-main-shot,.hero-badge,.hero-price-note,.hero-float,.hero-orbit,.kicker-dot{animation:none!important;opacity:1!important}
   [data-parallax]{transform:none!important}
 }
+
+
+/* Hero readability pass — keep the warm-paper look, increase contrast */
+.hero-v2 .hero-copy-v2{
+  background:var(--paper);
+  color:var(--ink);
+}
+.hero-v2 .hero-kicker{
+  color:#413a33;
+  opacity:1;
+}
+.hero-v2 .kicker-dot{
+  background:var(--hot);
+}
+.hero-v2 .hero-lede{
+  color:#51483f;
+  opacity:1;
+  font-weight:500;
+}
+.hero-v2 .hero-secondary{
+  color:var(--ink);
+  border-color:#6f655b;
+}
+.hero-v2 .hero-secondary:hover{
+  background:var(--ink);
+  color:var(--cream);
+}
+.hero-v2 .hero-proof{
+  border-top-color:#8f8376;
+  opacity:1;
+}
+.hero-v2 .hero-proof span{
+  color:#5b5148;
+}
+.hero-v2 .hero-proof b{
+  color:var(--hot);
+}
