@@ -50,3 +50,10 @@ INSERT OR IGNORE INTO products (id,name,category,price,image,description,availab
 ('smoky-jollof-fix','Smoky Jollof Fix','Rice',6500,'/assets/jollof.png','Smoky jollof rice, grilled chicken & sweet plantain.',1,1),
 ('fried-rice-fix','Fried Rice Fix','Rice',7000,'/assets/fried-rice.png','Nigerian fried rice, grilled chicken & plantain.',1,2),
 ('spaghetti-fix','Spaghetti Fix','Pasta',6500,'/assets/spaghetti.png','Smoky party spaghetti, grilled chicken & sweet plantain.',1,3);
+
+
+INSERT OR REPLACE INTO products (id,name,category,price,image,description,available,sort_order) VALUES
+('penne-meatballs','Penne Pasta + Meatballs','Pasta',7000,'/assets/menu/penne-meatballs.webp','Saucy penne pasta finished with seasoned beef meatballs.',1,10),
+('penne-grilled-chicken','Penne Pasta + Grilled Chicken','Pasta',6500,'/assets/menu/penne-chicken.webp','Saucy penne pasta topped with smoky grilled chicken.',1,11),
+('jollof-combo','Jollof Combo','Rice',6500,'/assets/menu/jollof-combo.webp','Jollof rice, sweet plantain and turkey. Minimum order quantity: 5 packs.',1,12),
+('party-platter','Party Platter — serves 15','Catering',250000,'/assets/menu/party-platter.webp','5L fried rice, 12 big burgers, 12 chicken kebabs, small chops platter with money bags, 12 cups mixed fruit and 12 complimentary popcorn packs.',1,13);
