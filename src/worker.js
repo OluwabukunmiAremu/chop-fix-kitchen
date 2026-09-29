@@ -43,6 +43,9 @@ async function createOrder(req,env){
     if(pay.status&&pay.data?.authorization_url){
       payment_url=pay.data.authorization_url;
       await env.DB.prepare("UPDATE orders SET paystack_reference=?,updated_at=CURRENT_TIMESTAMP WHERE id=?").bind(reference,orderId).run();
+    } else {
+      console.error("Paystack initialize failed", pay);
+      return bad(pay?.message||"Paystack could not initialize payment.",502);
     }
   }
   return json({order_id:orderId,reference,total,payment_url});
