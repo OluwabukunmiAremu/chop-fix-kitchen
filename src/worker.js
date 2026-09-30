@@ -36,7 +36,12 @@ async function createOrder(req,env){
 
   let payment_url=null;
   if(env.PAYSTACK_SECRET_KEY){
-    const res=await fetch("https://api.paystack.co/transaction/initialize",{method:"POST",headers:{Authorization:`Bearer ${env.PAYSTACK_SECRET_KEY}`,"content-type":"application/json"},body:JSON.stringify({
+    const res=await fetch("https://api.paystack.co/transaction/initialize",{method:"POST",headers:{
+      Authorization:`Bearer ${env.PAYSTACK_SECRET_KEY}`,
+      "content-type":"application/json",
+      "accept":"application/json",
+      "user-agent":"Mozilla/5.0 (compatible; ChopFixKitchen/1.0; +https://thechopfix.com)"
+    },body:JSON.stringify({
       email,
       amount:String(moneyNairaToKobo(total)),
       reference,
@@ -63,7 +68,11 @@ async function createOrder(req,env){
 }
 
 async function verifyPaystack(env,reference){
-  const res=await fetch("https://api.paystack.co/transaction/verify/"+encodeURIComponent(reference),{headers:{Authorization:`Bearer ${env.PAYSTACK_SECRET_KEY}`}});
+  const res=await fetch("https://api.paystack.co/transaction/verify/"+encodeURIComponent(reference),{headers:{
+    Authorization:`Bearer ${env.PAYSTACK_SECRET_KEY}`,
+    "accept":"application/json",
+    "user-agent":"Mozilla/5.0 (compatible; ChopFixKitchen/1.0; +https://thechopfix.com)"
+  }});
   const out=await res.json();
   if(out.status&&out.data?.status==="success"){
     await env.DB.prepare("UPDATE orders SET payment_status='paid',order_status=CASE WHEN order_status='pending_payment' THEN 'confirmed' ELSE order_status END,updated_at=CURRENT_TIMESTAMP WHERE reference=?").bind(reference).run();
