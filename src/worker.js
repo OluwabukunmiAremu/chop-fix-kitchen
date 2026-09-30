@@ -37,7 +37,11 @@ async function createOrder(req,env){
   let payment_url=null;
   if(env.PAYSTACK_SECRET_KEY){
     const res=await fetch("https://api.paystack.co/transaction/initialize",{method:"POST",headers:{Authorization:`Bearer ${env.PAYSTACK_SECRET_KEY}`,"content-type":"application/json"},body:JSON.stringify({
-      email,amount:moneyNairaToKobo(total),reference,callback_url:`${env.SITE_URL}/api/payments/callback`,metadata:{order_id:orderId,customer_name:name}
+      email,
+      amount:String(moneyNairaToKobo(total)),
+      reference,
+      callback_url:`${env.SITE_URL}/api/payments/callback`,
+      metadata:JSON.stringify({order_id:orderId,customer_name:name})
     })});
     const rawPay=await res.text();
     let pay=null;
