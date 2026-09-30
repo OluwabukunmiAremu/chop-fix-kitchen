@@ -9,7 +9,7 @@ binding = "ASSETS"
 [[d1_databases]]
 binding = "DB"
 database_name = "chop-fix-db"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "f4b8f8d1-4a46-4408-9e85-f811865959e7"
 
 [vars]
 SITE_URL = "https://thechopfix.com"
