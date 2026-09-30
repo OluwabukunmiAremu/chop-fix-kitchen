@@ -39,12 +39,19 @@ async function createOrder(req,env){
     const res=await fetch("https://api.paystack.co/transaction/initialize",{method:"POST",headers:{Authorization:`Bearer ${env.PAYSTACK_SECRET_KEY}`,"content-type":"application/json"},body:JSON.stringify({
       email,amount:moneyNairaToKobo(total),reference,callback_url:`${env.SITE_URL}/api/payments/callback`,metadata:{order_id:orderId,customer_name:name}
     })});
-    const pay=await res.json();
-    if(pay.status&&pay.data?.authorization_url){
+    const rawPay=await res.text();
+    let pay=null;
+    try{
+      pay=rawPay?JSON.parse(rawPay):null;
+    }catch(parseErr){
+      console.error("Paystack initialize returned non-JSON", {status:res.status, body:rawPay.slice(0,500)});
+      return bad("Paystack returned an invalid response. Please try again.",502);
+    }
+    if(res.ok&&pay?.status&&pay.data?.authorization_url){
       payment_url=pay.data.authorization_url;
       await env.DB.prepare("UPDATE orders SET paystack_reference=?,updated_at=CURRENT_TIMESTAMP WHERE id=?").bind(reference,orderId).run();
     } else {
-      console.error("Paystack initialize failed", pay);
+      console.error("Paystack initialize failed", {status:res.status, body:pay});
       return bad(pay?.message||"Paystack could not initialize payment.",502);
     }
   }
