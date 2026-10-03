@@ -14,6 +14,7 @@ async function validSession(req,env){const token=parseCookie(req,"cf_admin");if(
 async function body(req){try{return await req.json()}catch{return null}}
 async function products(env,admin=false){const q=admin?"SELECT * FROM products ORDER BY sort_order,name":"SELECT * FROM products WHERE available=1 ORDER BY sort_order,name";const r=await env.DB.prepare(q).all();return r.results.map(p=>({...p,available:Boolean(p.available)}))}
 async function orderById(env,id){const order=await env.DB.prepare("SELECT * FROM orders WHERE id=?").bind(id).first();if(!order)return null;const items=(await env.DB.prepare("SELECT * FROM order_items WHERE order_id=? ORDER BY id").bind(id).all()).results;return {...order,items}}
+async function deleteOrder(env,orderId){try{await env.DB.prepare("DELETE FROM orders WHERE id=?").bind(orderId).run()}catch(err){console.error("Failed to clean up order",{orderId,error:String(err)})}}
 
 async function createOrder(req,env){
   const data=await body(req); if(!data||!Array.isArray(data.items)||!data.items.length)return bad("Your cart is empty.");
@@ -26,7 +27,13 @@ async function createOrder(req,env){
   const placeholders=ids.map(()=>"?").join(",");
   const found=(await env.DB.prepare(`SELECT * FROM products WHERE id IN (${placeholders}) AND available=1`).bind(...ids).all()).results;
   const map=new Map(found.map(p=>[p.id,p])); let subtotal=0; const lines=[];
-  for(const row of data.items){const p=map.get(String(row.id));const qty=Math.max(1,Math.min(50,Number(row.quantity)||1));if(!p)return bad("One of the selected meals is unavailable.");const line=p.price*qty;subtotal+=line;lines.push({p,qty,line})}
+  for(const row of data.items){
+    const p=map.get(String(row.id));
+    const qty=Math.max(1,Math.min(50,Number(row.quantity)||1));
+    if(!p)return bad("One of the selected meals is unavailable.");
+    if(p.id==="jollof-combo"&&qty<5)return bad("Jollof Combo has a minimum order quantity of 5 packs.");
+    const line=p.price*qty;subtotal+=line;lines.push({p,qty,line});
+  }
   const deliveryFee=0,total=subtotal+deliveryFee,orderId=id(),reference="CF-"+Date.now()+"-"+Math.floor(Math.random()*900+100);
 
   await env.DB.prepare(`INSERT INTO orders(id,reference,customer_name,phone,email,fulfilment,address,notes,subtotal,delivery_fee,total) VALUES(?,?,?,?,?,?,?,?,?,?,?)`)
@@ -36,31 +43,40 @@ async function createOrder(req,env){
 
   let payment_url=null;
   if(env.PAYSTACK_SECRET_KEY){
-    const res=await fetch("https://api.paystack.co/transaction/initialize",{method:"POST",headers:{
-      Authorization:`Bearer ${env.PAYSTACK_SECRET_KEY}`,
-      "content-type":"application/json",
-      "accept":"application/json",
-      "user-agent":"Mozilla/5.0 (compatible; ChopFixKitchen/1.0; +https://thechopfix.com)"
-    },body:JSON.stringify({
-      email,
-      amount:String(moneyNairaToKobo(total)),
-      reference,
-      callback_url:`${env.SITE_URL}/api/payments/callback`,
-      metadata:JSON.stringify({order_id:orderId,customer_name:name})
-    })});
+    let res;
+    try{
+      res=await fetch("https://api.paystack.co/transaction/initialize",{method:"POST",headers:{
+        Authorization:`Bearer ${env.PAYSTACK_SECRET_KEY}`,
+        "content-type":"application/json",
+        "accept":"application/json",
+        "user-agent":"Mozilla/5.0 (compatible; ChopFixKitchen/1.0; +https://thechopfix.com)"
+      },body:JSON.stringify({
+        email,
+        amount:String(moneyNairaToKobo(total)),
+        reference,
+        callback_url:`${env.SITE_URL}/api/payments/callback`,
+        metadata:JSON.stringify({order_id:orderId,customer_name:name})
+      })});
+    }catch(err){
+      console.error("Paystack initialize network failure",{error:String(err)});
+      await deleteOrder(env,orderId);
+      return bad("Payment service is temporarily unavailable. Please try again.",502);
+    }
+
     const rawPay=await res.text();
     let pay=null;
-    try{
-      pay=rawPay?JSON.parse(rawPay):null;
-    }catch(parseErr){
-      console.error("Paystack initialize returned non-JSON", {status:res.status, body:rawPay.slice(0,500)});
+    try{pay=rawPay?JSON.parse(rawPay):null}catch(parseErr){
+      console.error("Paystack initialize returned non-JSON",{status:res.status,body:rawPay.slice(0,500)});
+      await deleteOrder(env,orderId);
       return bad("Paystack returned an invalid response. Please try again.",502);
     }
+
     if(res.ok&&pay?.status&&pay.data?.authorization_url){
       payment_url=pay.data.authorization_url;
       await env.DB.prepare("UPDATE orders SET paystack_reference=?,updated_at=CURRENT_TIMESTAMP WHERE id=?").bind(reference,orderId).run();
-    } else {
-      console.error("Paystack initialize failed", {status:res.status, body:pay});
+    }else{
+      console.error("Paystack initialize failed",{status:res.status,body:pay});
+      await deleteOrder(env,orderId);
       return bad(pay?.message||"Paystack could not initialize payment.",502);
     }
   }
@@ -68,17 +84,38 @@ async function createOrder(req,env){
 }
 
 async function verifyPaystack(env,reference){
-  const res=await fetch("https://api.paystack.co/transaction/verify/"+encodeURIComponent(reference),{headers:{
-    Authorization:`Bearer ${env.PAYSTACK_SECRET_KEY}`,
-    "accept":"application/json",
-    "user-agent":"Mozilla/5.0 (compatible; ChopFixKitchen/1.0; +https://thechopfix.com)"
-  }});
-  const out=await res.json();
-  if(out.status&&out.data?.status==="success"){
-    await env.DB.prepare("UPDATE orders SET payment_status='paid',order_status=CASE WHEN order_status='pending_payment' THEN 'confirmed' ELSE order_status END,updated_at=CURRENT_TIMESTAMP WHERE reference=?").bind(reference).run();
-    return true;
+  if(!env.PAYSTACK_SECRET_KEY||!reference)return false;
+  const order=await env.DB.prepare("SELECT id,total,payment_status FROM orders WHERE reference=?").bind(reference).first();
+  if(!order){console.error("Paystack verify: order not found",{reference});return false}
+  if(order.payment_status==="paid")return true;
+
+  let res;
+  try{
+    res=await fetch("https://api.paystack.co/transaction/verify/"+encodeURIComponent(reference),{headers:{
+      Authorization:`Bearer ${env.PAYSTACK_SECRET_KEY}`,
+      "accept":"application/json",
+      "user-agent":"Mozilla/5.0 (compatible; ChopFixKitchen/1.0; +https://thechopfix.com)"
+    }});
+  }catch(err){console.error("Paystack verify network failure",{reference,error:String(err)});return false}
+
+  const raw=await res.text();
+  let out=null;
+  try{out=raw?JSON.parse(raw):null}catch(err){console.error("Paystack verify returned non-JSON",{reference,status:res.status,body:raw.slice(0,500)});return false}
+  if(!res.ok||!out?.status||out.data?.status!=="success"){
+    console.error("Paystack verify failed",{reference,status:res.status,body:out});
+    return false;
   }
-  return false;
+
+  const verifiedReference=String(out.data?.reference||"");
+  const verifiedAmount=Number(out.data?.amount);
+  const verifiedCurrency=String(out.data?.currency||"").toUpperCase();
+  if(verifiedReference!==reference||verifiedAmount!==moneyNairaToKobo(order.total)||verifiedCurrency!=="NGN"){
+    console.error("Paystack verification mismatch",{reference,verifiedReference,expectedAmount:moneyNairaToKobo(order.total),verifiedAmount,verifiedCurrency});
+    return false;
+  }
+
+  await env.DB.prepare("UPDATE orders SET payment_status='paid',order_status=CASE WHEN order_status='pending_payment' THEN 'confirmed' ELSE order_status END,updated_at=CURRENT_TIMESTAMP WHERE reference=?").bind(reference).run();
+  return true;
 }
 
 async function adminApi(req,env,url){
@@ -119,16 +156,16 @@ export default {
 
       if(url.pathname==="/api/payments/callback"&&req.method==="GET"){
         const reference=url.searchParams.get("reference")||url.searchParams.get("trxref");
-        if(!reference||!env.PAYSTACK_SECRET_KEY)return Response.redirect(env.SITE_URL+"/?payment=failed",302);
+        if(!reference||!env.PAYSTACK_SECRET_KEY)return Response.redirect(env.SITE_URL+"/menu/?payment=failed",302);
         const ok=await verifyPaystack(env,reference);
-        return Response.redirect(env.SITE_URL+`/?payment=${ok?"success":"failed"}&reference=${encodeURIComponent(reference)}`,302);
+        return Response.redirect(env.SITE_URL+`/menu/?payment=${ok?"success":"failed"}&reference=${encodeURIComponent(reference)}`,302);
       }
 
       if(url.pathname==="/api/payments/webhook"&&req.method==="POST"){
         if(!env.PAYSTACK_SECRET_KEY)return bad("Not configured",503);
         const raw=await req.text(),provided=req.headers.get("x-paystack-signature")||"",expected=await hmacHex(env.PAYSTACK_SECRET_KEY,raw,"SHA-512");
         if(!safeEqual(provided,expected))return bad("Invalid signature",401);
-        const event=JSON.parse(raw);
+        let event=null;try{event=JSON.parse(raw)}catch{return bad("Invalid webhook payload",400)}
         if(event.event==="charge.success"&&event.data?.reference)await verifyPaystack(env,event.data.reference);
         return new Response("ok");
       }
