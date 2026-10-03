@@ -46,11 +46,9 @@ CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(order_status);
 CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
 
-INSERT OR IGNORE INTO products (id,name,category,price,image,description,available,sort_order) VALUES
-('smoky-jollof-fix','Smoky Jollof Fix','Rice',6500,'/assets/jollof.png','Smoky jollof rice, grilled chicken & sweet plantain.',1,1),
-('fried-rice-fix','Fried Rice Fix','Rice',7000,'/assets/fried-rice.png','Nigerian fried rice, grilled chicken & plantain.',1,2),
-('spaghetti-fix','Spaghetti Fix','Pasta',6500,'/assets/spaghetti.png','Smoky party spaghetti, grilled chicken & sweet plantain.',1,3);
-
+-- Remove obsolete seed menu items from older versions. Historical order items keep their
+-- own product_name and unit_price snapshots, so deleting these catalog rows is safe.
+DELETE FROM products WHERE id IN ('smoky-jollof-fix','fried-rice-fix','spaghetti-fix');
 
 INSERT OR REPLACE INTO products (id,name,category,price,image,description,available,sort_order) VALUES
 ('penne-meatballs','Penne Pasta + Meatballs','Pasta',7000,'/assets/menu/penne-meatballs.webp','Saucy penne pasta finished with seasoned beef meatballs.',1,10),
